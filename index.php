@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Created by PhpStorm.
@@ -12,14 +13,16 @@
 header("Content-Type: text/html; charset=UTF-8");
 $dir = "/AppServ/www/checkimages/backgrounds/";
 
-checkFile($dir);
+echo "共删除".checkFile($dir)."个文件<br>";
 
 function checkFile($dir) {
     //创建一个数组用于保存已经检查过的文件
     $t = array();
+    //创建一个计数器，统计一共删除了多少文件
+    $count = 0;
     //检查如果$dir是一个文件夹则打开这个文件夹
     if (is_dir($dir) && $dh = opendir($dir)) {
-        //从打开的文件夹中读取文件直到读取失败或者读取完所有文件kjshdofho oi 啊skl；的纠纷解决撒；龙宽九段asdlfkjoh odjsajlk;jflk;j
+        //从打
         while (($file = readdir($dh)) !== false) {
             //当读取到的文件不在$t中的时候才进行判断
             if (!in_array($file, $t) ) {
@@ -29,17 +32,16 @@ function checkFile($dir) {
                 if ($file != '.' && $file != '..' && $dh2 = opendir($dir)) {
                     while (($file2 = readdir($dh2)) !== false) {
                         if (!in_array($file2, $t) ) {
-                            //比较两个文件的MD5值，如果一样的 话就删除第二个文件
-                            if (checkMd5($dir . $file, $dir . $file2)) {
-                                $t[$file2] = $file2;
-                                if(delete($dir.$file2)){
-                                    echo '删除'.$file2.'成功<br>';
-                                }else{
-                                    echo '删除'.$file2.'不成功：未知错误<br>';
-                                }
-                            }else{
-                                echo $file.'和'.$file2.'不相同<br>';
-                            }
+							//比较两个文件的MD5值，如果一样的 话就删除第二个文件
+							if (checkMd5($dir . $file, $dir . $file2)) {
+								$t[$file2] = $file2;
+								if(delete($dir.$file)){
+									echo '删除'.$file.'成功<br>';
+                                    $count++;
+								}else{
+									echo '删除'.$file.'不成功：未知错误<br>';
+								}
+							}
                         }
                     }
                     closedir($dh2);
@@ -48,6 +50,7 @@ function checkFile($dir) {
         }
         closedir($dh);
     }
+    return $count;
 }
 
 //比较两个文件的MD5值，一样的话返回true否则返回false
